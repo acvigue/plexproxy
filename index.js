@@ -34,12 +34,9 @@ const plexHeaders = {
   "user-agent": "PlexMediaServer/1.25.2.5319-c43dc0277"
 }
 
-console.log(clientIDWhitelist);
-
 app.get('/media/providers', async (req, res) => {
   let token = req.query["X-Plex-Token"] || req.headers["x-plex-token"] || "";
   let clientIdentifier = req.query["X-Plex-Client-Identifier"] || req.headers["x-plex-client-identifier"] || "";
-  console.log(token, clientIdentifier);
   var tokenResp = "";
   try {
     tokenResp = (await axios.get(`https://plex.tv/users/account?X-Plex-Token=${token}`)).data
