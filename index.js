@@ -6,12 +6,12 @@ const app = express()
 var cors = require('cors')
 app.use(cors())
 
-const port = 8080
+const port = process.env.PORT
 const global_serverID = process.env.PLEX_SERVER_ID;
 const global_token = process.env.PLEX_SERVER_TOKEN;
 
 //Plex client IDs that are allowed to access the protected library.
-const clientIDWhitelist = (process.env.ALLOWED_CLIENTS || "").split(",");
+const clientIDWhitelist = (process.env.ALLOWED_CLIENTS).split(",");
 const userID = process.env.ALLOWED_USER;
 
 //Blocked library ID
@@ -34,10 +34,12 @@ const plexHeaders = {
   "user-agent": "PlexMediaServer/1.25.2.5319-c43dc0277"
 }
 
+console.log(clientIDWhitelist);
+
 app.get('/media/providers', async (req, res) => {
   let token = req.query["X-Plex-Token"] || req.headers["x-plex-token"] || "";
   let clientIdentifier = req.query["X-Plex-Client-Identifier"] || req.headers["x-plex-client-identifier"] || "";
-
+  console.log(token, clientIdentifier);
   var tokenResp = "";
   try {
     tokenResp = (await axios.get(`https://plex.tv/users/account?X-Plex-Token=${token}`)).data
@@ -215,7 +217,7 @@ function refreshConnectivityOptions(local, remote) {
 
 setInterval(async () => {
   await refreshConnectivityOptions(process.env.PLEX_LOCAL_URL, process.env.PLEX_REMOTE_URL);
-}, 3600);
+}, 1800*1000);
 
 app.listen(port, () => {
   console.log(`PlexProxy active!`)
