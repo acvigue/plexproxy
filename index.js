@@ -80,6 +80,16 @@ app.get('/media/providers', async (req, res) => {
       
       res.setHeader("x-plex-protocol", "1.0");
       if((responseMIME.indexOf("xml") != -1 || responseMIME.indexOf("*/*") != -1) && responseMIME.indexOf("application/json") == -1) {
+        for(const key of Object.keys(newResp.MediaContainer)) {
+          if(typeof newResp.MediaContainer[key] == "boolean") {
+            if(newResp.MediaContainer[key] == true) {
+              newResp.MediaContainer[key] = 1;
+            } else {
+              newResp.MediaContainer[key] = 0;
+            }
+          }
+        }
+        
         let xml = obj2xml(newResp, true);
         res.setHeader("Content-Type", "text/xml");
         //console.log("sending xml", xml);
